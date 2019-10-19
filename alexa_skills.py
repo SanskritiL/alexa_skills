@@ -58,8 +58,6 @@ class CaptureNameIntentHandler(AbstractRequestHandler):
 
 
 
-
-
 class CaptureInitialQuestionIntentHandler(AbstractRequestHandler):
     """Handler for capture initial question."""
     def can_handle(self, handler_input):
@@ -74,18 +72,36 @@ class CaptureInitialQuestionIntentHandler(AbstractRequestHandler):
             handler_input.response_builder.speak(speak_output).ask(reprompt_text)
             return handler_input.response_builder.response
         
-        
+
 class YesIntentHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         # type: (HandlerInput) -> bool
         return ask_utils.is_intent_name("AMAZON.YesIntent")(handler_input)
     def handle(self, handler_input):
-        speak_output = " Ok! Brace Yourself. There are currently 19 people running for the 2020 Democratic nomination. President Donald Trump has picked up some Republican challengers, too. Say Democrat or Republican or both to know more about nominees from respective party."
+        speak_output = " Ok! Brace Yourself. There are currently 19 people running for the 2020 Democratic nomination. President Donald Trump has picked up some Republican challengers too. Would you like to know the nominees from Democratic party or Republican party or both."
+        reprompt_text = "hola hola which party"
+        handler_input.response_builder.speak(speak_output).ask(reprompt_text)
+        return handler_input.response_builder.response
+
+class CapturePartyIntentHandler(AbstractRequestHandler):
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return ask_utils.is_intent_name("captureParty")(handler_input)
+    def handle(self, handler_input):
+        
+        slots = handler_input.request_envelope.request.intent.slots
+        party  = slots["party"].value
+        if(party.startswith('democrat')):
+            speak_output= "Here is the list of all leaders from {party}".format(party=party)
+        else:
+            speak_output= "Donald trump is from Republican and here are all the leader".format(party=party)
         return(
             handler_input.response_builder
                 .speak(speak_output)
                 .response
         )
+
+
 
 class HelpIntentHandler(AbstractRequestHandler):
     """Handler for Help Intent."""
@@ -194,6 +210,7 @@ sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CaptureNameIntentHandler())
 sb.add_request_handler(CaptureInitialQuestionIntentHandler())
 sb.add_request_handler(YesIntentHandler())
+sb.add_request_handler(CapturePartyIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())
 sb.add_request_handler(IntentReflectorHandler()) # make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
