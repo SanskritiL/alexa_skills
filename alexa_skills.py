@@ -92,14 +92,19 @@ class CapturePartyIntentHandler(AbstractRequestHandler):
         slots = handler_input.request_envelope.request.intent.slots
         party  = slots["party"].value
         if(party.startswith('democrat')):
-            speak_output= "Here is the list of all leaders from {party}".format(party=party)
+            speak_output= "{party} ...Ok, As of now, eight democratic candidates are qualified for the November debate. The top three candidates on the basis of national polling average are former Vice President Joe Biden, Senator Elizabeth Warren from Massachusetts and Senator Bernie Sanders from Vermont trailing Senator Pete Buttigieg.  Other candidates with impressive individual contribution and weekly news coverage are Senator Kamala Harris, Andrew Yang, and Senator Cory Booker. ".format(party=party)
         else:
-            speak_output= "Donald trump is from Republican and here are all the leader".format(party=party)
+            speak_output= "As of October 2019, there are four notable Republicans running. Current President Donald Trump, former governor Mark Sanford, Bill Weld and Joe Walsh. Those running a primary campaign against a sitting president have little chance of success—the only elected president to lose his bid for a second term in the following primary was Franklin Pierce in 1857 but that doesn't mean their campaigns won't have an impact.".format(party=party)
+        slots = handler_input.request_envelope.request.intent.slots
+        user_name = slots["user_name"].value
+        reprompt_text="{user_name}, I know this is a lot of information. You can say the candidate's name to get more information about them. If unsure, say,  'unsure' ".format(user_name=user_name)
         return(
             handler_input.response_builder
                 .speak(speak_output)
                 .response
         )
+
+
 
 
 
